@@ -211,8 +211,16 @@ class DeviceTypeTestBase(TestCase):
             setattr(cls, test_name, instantiated_test)
         else:  # Test has dtype variants
             for dtype in dtypes:
-                dtype_str = str(dtype).split('.')[1]
-                dtype_test_name = test_name + "_" + dtype_str
+
+                # Constructs dtype suffix
+                if isinstance(dtype, (list, tuple)):
+                    dtype_str = ""
+                    for d in dtype:
+                        dtype_str += "_" + str(d).split('.')[1]
+                else:
+                    dtype_str = "_" + str(dtype).split('.')[1]
+
+                dtype_test_name = test_name + dtype_str
                 assert not hasattr(cls, dtype_test_name), "Redefinition of test {0}".format(dtype_test_name)
 
                 @wraps(test)
@@ -530,13 +538,23 @@ class precisionOverride(object):
 #   (1) Tests that accept the dtype argument MUST use this decorator.
 #   (2) Can be overridden for the CPU or CUDA, respectively, using dtypesIfCPU
 #       or dtypesIfCUDA.
-#   (3) Prefer the existing decorators to defining the 'device_type' kwarg.
+#   (3) Can accept an iterable of dtypes or an iterable of lists or tuples
+#       of dtypes.
 class dtypes(object):
 
     # Note: *args, **kwargs for Python2 compat.
     # Python 3 allows (self, *args, device_type='all').
     def __init__(self, *args, **kwargs):
-        assert all(isinstance(arg, torch.dtype) for arg in args), "Unknown dtype in {0}".format(str(args))
+        if isinstance(args[0], (list, tuple)):
+            for arg in args:
+                assert isinstance(arg, (list, tuple)), \
+                    "When one dtype variant is a tuple or list, " \
+                    "all dtype variants must be. " \
+                    "Received non-list non-tuple dtype {0}".format(str(arg))
+                assert all(isinstance(dtype, torch.dtype) for dtype in arg), "Unknown dtype in {0}".format(str(arg))
+        else:
+            assert all(isinstance(arg, torch.dtype) for arg in args), "Unknown dtype in {0}".format(str(args))
+
         self.args = args
         self.device_type = kwargs.get('device_type', 'all')
 
