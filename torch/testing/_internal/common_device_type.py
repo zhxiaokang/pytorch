@@ -21,11 +21,11 @@ from torch.testing._internal.common_utils import TestCase, TEST_WITH_ROCM, TEST_
 #           (1b) @deviceCountAtLeast(<minimum number of devices to run test with>)
 #                testX(self, devices)
 #
-#           (1c) @dtypes(<list of dtypes>)
+#           (1c) @dtypes(<list of dtypes> or <list of tuples of dtypes>)
 #                testX(self, device, dtype)
 #
 #           (1d) @deviceCountAtLeast(<minimum number of devices to run test with>)
-#                @dtypes(<list of dtypes>)
+#                @dtypes(<list of dtypes> or <list of tuples of dtypes>)
 #                testX(self, devices, dtype)
 #
 #
@@ -40,8 +40,9 @@ from torch.testing._internal.common_utils import TestCase, TEST_WITH_ROCM, TEST_
 #       primary device. These tests will be skipped if the device type
 #       has fewer available devices than the argument to @deviceCountAtLeast.
 #
-#       Tests like (1c) are called with a device string and a torch.dtype from
-#       the list of dtypes specified in the @dtypes decorator. Device-specific
+#       Tests like (1c) are called with a device string and a torch.dtype (or
+#       a tuple of torch.dtypes) from the list of dtypes (or list of tuples
+#       of torch.dtypes) specified in the @dtypes decorator. Device-specific
 #       dtype overrides can be specified using @dtypesIfCPU and @dtypesIfCUDA.
 #
 #       Tests like (1d) take a devices argument like (1b) and a dtype
