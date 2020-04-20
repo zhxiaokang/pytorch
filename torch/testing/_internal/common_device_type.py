@@ -539,8 +539,11 @@ class precisionOverride(object):
 #   (1) Tests that accept the dtype argument MUST use this decorator.
 #   (2) Can be overridden for the CPU or CUDA, respectively, using dtypesIfCPU
 #       or dtypesIfCUDA.
-#   (3) Can accept an iterable of dtypes or an iterable of lists or tuples
+#   (3) Can accept an iterable of dtypes or an iterable of tuples
 #       of dtypes.
+# Examples:
+# @dtypes(torch.float32, torch.float64)
+# @dtypes((torch.long, torch.float32), (torch.int, torch.float64))
 class dtypes(object):
 
     # Note: *args, **kwargs for Python2 compat.
