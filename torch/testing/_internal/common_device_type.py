@@ -549,7 +549,7 @@ class dtypes(object):
     # Note: *args, **kwargs for Python2 compat.
     # Python 3 allows (self, *args, device_type='all').
     def __init__(self, *args, **kwargs):
-        if isinstance(args[0], (list, tuple)):
+        if len(args) > 0 and isinstance(args[0], (list, tuple)):
             for arg in args:
                 assert isinstance(arg, (list, tuple)), \
                     "When one dtype variant is a tuple or list, " \
